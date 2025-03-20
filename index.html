@@ -5,8 +5,6 @@
 
   <title>Every Painting Awakened: A Training-free Framework for Painting-to-Animation Generation</title>
   <link href="./files/style.css" rel="stylesheet">
-  <!-- <script type="text/javascript" src="./DreamBooth_files/jquery.mlens-1.0.min.js.下载"></script> 
-<script type="text/javascript" src="./DreamBooth_files/jquery.js.下载"></script> -->
 </head>
 
 <body>
@@ -157,10 +155,11 @@
       results in two distinct failure modes: either static outputs due to limited text-based motion interpretation or
       distorted dynamics caused by inadequate alignment with real-world artistic styles.
       Our approach harmonizes image diffusion refinement with advanced video generation models through two key
-      innovations: First, we leverage synthetic imagery to bridge the gap between textual instructions and visual
-      content, enhancing comprehension of motion semantics and clarity of object structure within the context of
-      artistic works. Second, we extract motion priors from both real paintings and synthetic images via latent feature
-      interpolation, combined with a dual-path video score distillation sampling strategy to ensure temporal coherence.
+      innovations:<b>(1) synthetic future guidance:</b> we leverage synthetic proxy images to bridge the gap between
+      textual instructions and visual content, enhancing comprehension of motion semantics and clarity of object
+      structure within the context of artistic works. <b>(2) hybrid latent fusion:</b> we extract hybrid features from
+      real paintings and proxy images through latent feature interpolation, and incorporate a dual-path video score
+      distillation sampling strategy to ensure motion priors.
       Experimental evaluations confirm that our approach significantly improves semantic alignment with text prompts
       while faithfully preserving the unique characteristics and integrity of the original paintings. Crucially, by
       achieving enhanced dynamic effects without requiring any model training or learnable parameters, our framework
@@ -210,17 +209,18 @@
   <div class="content">
     <h2>Approach</h2>
     <img class="summary-img" src="./files/framework2.jpg" style="width:90%;"> <br>
-    <p> Given a real painting and its corresponding synthesized image refined by an image-to-image model, we first apply
-      video score distillation sampling to both images to endow their latent vectors with motion information. We then
-      perform uniform spherical linear interpolation on the updated latent vectors across the frame dimension. Finally,
-      the fused new latent vectors are used as input to the I2V model to generate dynamic videos. The green diagram
-      illustrates the process of video score distillation sampling. Given a real painting, we use an image encoder to
-      extract its latent vector and replicate this latent vector across the frame dimension to form a static video. We
-      first randomly sample Gaussian noise. For each time step t, we add this noise to the static video vectors to
-      obtain the noise latent, then compute
-      the gradient of the video score distillation sampling loss with respect to the video latent and update the video
-      latent based on this gradient. Finally, we return the optimized dynamic video
-      latent.</p>
+    <p> We first use a pre-trained image refinement model to generate a refined synthetic image
+      from the real painting and the text prompt for future guidance.
+      We apply dual-path video score distillation sampling to the real painting and the synthetic proxy image, obtaining
+      two updated initial video latent vectors. These
+      vectors are then spherically interpolated along the temporal dimension to generate a fused latent vector. This
+      fused vector is subsequently used as input to the I2V model for video
+      generation.
+      Specifically, for a real painting, its latent vector extracted by an image encoder is replicated to form a static
+      video. During the video score distillation sampling phase, gaussian noise is added to this static video at each
+      time step, and the gradient of the video score
+      distillation sampling loss updates the latent vector, resulting in the optimized dynamic video latent.
+    </p>
     <br>
 
   </div>
@@ -275,7 +275,7 @@
     <div class="row" style="display: flex; align-items: center;">
       <div class="col-gallery" style="width: 8%; display: inline-block; vertical-align: top;">
         <div style="display: flex; justify-content: center;">
-          <p style="text-align: center;"><b>Synthetic Image</b></p>
+          <p style="text-align: center;"><b>Proxy Image</b></p>
         </div>
       </div>
       <div class="col-gallery" style="width: 23%; display: inline-block; vertical-align: top;">
@@ -380,7 +380,7 @@
     <div class="row" style="display: flex; align-items: center;">
       <div class="col-gallery" style="width: 8%; display: inline-block; vertical-align: top;">
         <div style="display: flex; justify-content: center;">
-          <p style="text-align: center;"><b>Synthetic Image</b></p>
+          <p style="text-align: center;"><b>Proxy Image</b></p>
         </div>
       </div>
       <div class="col-gallery" style="width: 23%; display: inline-block; vertical-align: top;">
@@ -491,7 +491,7 @@
     <div class="row" style="display: flex; align-items: center;">
       <div class="col-gallery" style="width: 8%; display: inline-block; vertical-align: top;">
         <div style="display: flex; justify-content: center;">
-          <p style="text-align: center;"><b>Synthetic Image</b></p>
+          <p style="text-align: center;"><b>Proxy Image</b></p>
         </div>
       </div>
       <div class="col-gallery" style="width: 23%; display: inline-block; vertical-align: top;">
@@ -594,7 +594,7 @@
         <img src="./files/i2i/msa.jpg" width="100%">
       </div>
       <div class="col-gallery" style="width: 23%; display: inline-block; vertical-align: top;">
-        <img src="./files/i2i/ip.jpg" width="100%">
+
       </div>
     </div>
 
@@ -613,11 +613,11 @@
       </div>
       <div class="col-gallery"
         style="width: 23%; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; vertical-align: top; text-align: center;">
-        <p class="indent-2chars">Image Editing 1</p>
+        <p class="indent-2chars">Image Editing</p>
       </div>
       <div class="col-gallery"
         style="width: 23%; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; vertical-align: top; text-align: center;">
-        <p class="indent-2chars">Image Editing 2</p>
+        <p class="indent-2chars">Baseline</p>
       </div>
     </div>
 
@@ -637,7 +637,7 @@
         <img src="./files/i2i/msa.gif" width="100%">
       </div>
       <div class="col-gallery" style="width: 23%; display: inline-block; vertical-align: top;">
-        <img src="./files/i2i/ip.gif" width="100%">
+        <img src="./files/i2i/base.gif" width="100%">
       </div>
     </div>
 
