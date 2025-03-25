@@ -154,12 +154,14 @@
       It remains challenging to generate motion while maintaining visual consistency with real-world paintings. This
       results in two distinct failure modes: either static outputs due to limited text-based motion interpretation or
       distorted dynamics caused by inadequate alignment with real-world artistic styles.
-      Our approach harmonizes image diffusion refinement with advanced video generation models through two key
-      innovations:<b>(1) synthetic future guidance:</b> we leverage synthetic proxy images to bridge the gap between
-      textual instructions and visual content, enhancing comprehension of motion semantics and clarity of object
-      structure within the context of artistic works. <b>(2) hybrid latent fusion:</b> we extract hybrid features from
-      real paintings and proxy images through latent feature interpolation, and incorporate a dual-path video score
-      distillation sampling strategy to ensure motion priors.
+      We leverage the advanced text-image alignment capabilities of pre-trained image models to guide the animation
+      process. Our approach introduces synthetic proxy images through two key innovations:
+      (1) <b>Dual-path score distillation:</b> We employ a dual-path architecture to distill motion priors from both
+      real and synthetic data, preserving static details from the original painting while learning dynamic
+      characteristics from synthetic frames.
+      (2) <b>Hybrid latent fusion:</b> We integrate hybrid features extracted from real paintings and synthetic proxy
+      images via spherical linear interpolation in the latent space, ensuring smooth transitions and enhancing temporal
+      consistency.
       Experimental evaluations confirm that our approach significantly improves semantic alignment with text prompts
       while faithfully preserving the unique characteristics and integrity of the original paintings. Crucially, by
       achieving enhanced dynamic effects without requiring any model training or learnable parameters, our framework
